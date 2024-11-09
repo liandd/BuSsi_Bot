@@ -1,4 +1,4 @@
-#!/home/blyaat/Desktop/ian/GitHub/BuSsi_Bot/my_env/bin python3
+#!/usr/bin/env python3
 
 import sys
 from pathlib import Path
