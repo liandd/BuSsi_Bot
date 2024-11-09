@@ -2,4 +2,4 @@ Data/
 my_env/
 utils/__pycache__/
 models/*.sav
-
+.idea/
