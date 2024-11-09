@@ -23,5 +23,5 @@ rnnmodel.fit(pr.x_train, y_train, batch_size=32, epochs=30,validation_data=(pr.x
 print('ENTRENAMIENTO COMPLETO.')
 
 filename = "BuSsi_lstm_model.sav"
-pickle.dump(model, open(filename,'wb'))
+pr.pickle.dump(rnnmodel, open(filename,'wb'))
 print('MODELO EXPORTADO CON EXITO.')
