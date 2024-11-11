@@ -1,10 +1,20 @@
 #!/usr/bin/env python3
 
 import sys
+import os
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from utils import preprocess as pr
+
+#Validar si ya está el archivo de entrenamiento
+#Global
+BASE_DIR = '/models/'
+LSTM_DIR = os.path.join(BASE_DIR, 'BuSsi_lstm_model.sav')
+
+if os.path.exists(LSTM_DIR):
+    print('MODELO ENCONTRADO CON EXITO!')
+    sys.exit(0)
 
 print('DEFINIR Y ENTRENAR LSTM. ENTRENAR EMBEDDING')
 
