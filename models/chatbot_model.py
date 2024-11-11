@@ -18,14 +18,14 @@ from utils import preprocess as pr
 warnings.filterwarnings("ignore")
 
 #Global
-BASE_DIR = '/models/'
+BASE_DIR = '/home/qw4qe/Desktop/ian/Ucp/Optativa1_PLN/PROYECTO_BOT/BuSsi_Bot/models/'
 LSTM_DIR = os.path.join(BASE_DIR, 'BuSsi_lstm_model.sav')
 
 #Clase chatbot
 class Chatbot:
     def __init__(self):
         self.saludos_inputs = ["hola", "buenas", "saludos", "qué tal", "buenos días", "hola amigo", "buen día", "hey", "bussi hola", "cómo estás", "bussi cómo estás"]
-        self.saludos_outputs = ["Hola, soy BuSsi", "Buenas Tardes, ¿en qué te puedo ayuda?", "Hola, cuentame de ti", "Hey, aquí BuSsi", "¿Cómo puedo ayudarte?", "Saludos amigo", "Hola, amigo!", "Hola, ¿Cómo te puedo ayudar?"]
+        self.saludos_outputs = ["Hola, soy BuSsi", "Buenas Tardes, ¿en qué te puedo ayudar?", "Hola, cuentame de ti", "Hey, aquí BuSsi", "¿Cómo puedo ayudarte?", "Saludos amigo", "Hola, amigo!", "Hola, ¿Cómo te puedo ayudar?"]
         
         self.load_model()
 
@@ -38,7 +38,7 @@ class Chatbot:
         if os.path.exists(BASE_DIR):
             print('MODELO ENCONTRADO CON EXITO!')
 
-            with open(filename, 'rb') as file:
+            with open(LSTM_DIR, 'rb') as file:
                 self.lstm_model = pr.pickle.load(file)
             print('MODELO CARGADO EXITOSAMENTE!')
         else:
@@ -90,16 +90,17 @@ class Chatbot:
                 return True
         return False
 
-    def chat(self):
+    def chat(self, text):
         # Modo conversación
         yield "Soy BuSsi, Un ChatBot bajo el dominio Negocios. Contestaré a tus preguntas acerca de Negocios. Si quiere salir escribe 'salir'"
         flag:bool = True
+        user_response = text.lower()
         while flag:
-            user_response = input().lower()
             if user_response == 'salir':
                 yield "Fue un gusto hablar contigo, ¡Cuídate!"
                 flag = False
             else:
-                yield "BuSsi "+ self.get_response(user_response)
+                yield self.get_response(user_response)
+                user_response = (yield)
 
 
