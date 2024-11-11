@@ -49,17 +49,42 @@ class ChatbotControlador:
         return wav_path
 
     def start_chat(self):
-        str_de_audio = self.speech_file()
-        print(str_de_audio+'\n')
-        response = chatbot.get_response(str_de_audio)
-        print('bussi:'+response)
+        initial_text = self.speech_file()
+        print(initial_text+'\n')
+        self.play_audio(initial_text)
+        #response = chatbot.get_response(str_de_audio)
+        
+        chat_generation = chatbot.chat(initial_text)
+        str_response = next(chat_generation)
+        print(str_response)
+        self.play_audio(str_response)
+        initial_text = ""
 
-        wav_path = self.generate_audio(response)
-        music = pt.media.load(wav_path, streaming=False)
-        music.play()
-        time.sleep(music.duration)
+        while True:
+            if initial_text == 'salir':
+                exit_response = chat_generation.send(initial_text)
+                print(exit_response)
+                self.play_audio(exit_response)
+                self.play_audio('CERRANDO CHAT!')
+                break
+            else:
+                str_response = chat_generation.send(initial_text) if initial_text else None
+                if str_response:
+                    print(str_response)
+                    self.play_audio(str_response)
+                    continue
+                    
+                initial_text = input().lower()
 
+    def play_audio(self, response):
+        if response:
+            wav_path = self.generate_audio(response)
+            music = pt.media.load(wav_path, streaming=False)
+            music.play()
+            time.sleep(music.duration)
 
+os.system('clear')
+time.sleep(2)
 controlador = ChatbotControlador()
 controlador.start_chat()
 #str_de_audio = controlador.speech_file()
