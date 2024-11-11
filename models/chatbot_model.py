@@ -18,7 +18,7 @@ from utils import preprocess as pr
 warnings.filterwarnings("ignore")
 
 #Global
-BASE_DIR = '/home/qw4qe/Desktop/ian/Ucp/Optativa1_PLN/PROYECTO_BOT/BuSsi_Bot/models/'
+BASE_DIR = '/models/'
 LSTM_DIR = os.path.join(BASE_DIR, 'BuSsi_lstm_model.sav')
 
 #Clase chatbot
