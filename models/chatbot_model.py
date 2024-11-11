@@ -18,14 +18,14 @@ from utils import preprocess as pr
 warnings.filterwarnings("ignore")
 
 #Global
-BASE_DIR = '/home/qw4qe/Desktop/ian/Ucp/Optativa1_PLN/PROYECTO_BOT/BuSsi_Bot/models/'
+BASE_DIR = '/models/'
 LSTM_DIR = os.path.join(BASE_DIR, 'BuSsi_lstm_model.sav')
 
 #Clase chatbot
 class Chatbot:
     def __init__(self):
-        self.saludos_inputs = ["hola", "buenas", "saludos", "qué tal", "buenos días", "hola amigo", "buen día", "hey", "bussi hola", "cómo estás", "bussi cómo estás"]
-        self.saludos_outputs = ["Hola, soy BuSsi", "Buenas Tardes, ¿en qué te puedo ayudar?", "Hola, cuentame de ti", "Hey, aquí BuSsi", "¿Cómo puedo ayudarte?", "Saludos amigo", "Hola, amigo!", "Hola, ¿Cómo te puedo ayudar?"]
+        self.saludos_inputs = ["hola", "buenas", "saludos", "qué tal", "buenos días", "hola amigo", "buen día", "hey", "holaa", "cómo estás", "lucy cómo estás", "como estas", "buenos dias"]
+        self.saludos_outputs = ["Hola, soy Lucy", "Buenas Tardes, ¿en qué te puedo ayudar?", "Hola, cuentame de ti", "Hey, aquí Lucy", "¿Cómo puedo ayudarte?", "Saludos amigo", "Hola, amigo!", "Hola, ¿Cómo te puedo ayudar?"]
         
         self.load_model()
 
@@ -79,7 +79,7 @@ class Chatbot:
             threshold = 0.3
 
             if req_tfidf < threshold:
-                return "Lo siento, no te BuSsi_entiendo. Póngase en contacto con Equipo1@ucp.edu.co"
+                return "Lo siento, no te entiendo. Póngase en contacto con Equipo1@ucp.edu.co"
             else:
                 self.sent_tokens.pop()  
                 return self.sent_tokens[idx]
@@ -92,7 +92,7 @@ class Chatbot:
 
     def chat(self, text):
         # Modo conversación
-        yield "Soy BuSsi, Un ChatBot bajo el dominio Negocios. Contestaré a tus preguntas acerca de Negocios. Si quiere salir escribe 'salir'"
+        yield "Soy Lucy, Un ChatBot bajo el dominio Negocios. Contestaré a tus preguntas acerca de Negocios. Si quiere salir escribe salir."
         flag:bool = True
         user_response = text.lower()
         while flag:

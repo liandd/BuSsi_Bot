@@ -2,6 +2,7 @@
 
 import speech_recognition as sr
 import pyglet as pt
+import pyaudio
 import time
 import sys
 import os
@@ -13,6 +14,7 @@ from gtts import gTTS
 from pydub import AudioSegment
 from pathlib import Path
 from models import chatbot_model as bussi
+from utils import recorder as rd
 
 # Globales
 chatbot = bussi.Chatbot() 
@@ -74,7 +76,8 @@ class ChatbotControlador:
                     self.play_audio(str_response)
                     continue
                     
-                initial_text = input().lower()
+                #initial_text = input().lower()
+                initial_text = self.record_linux()
 
     def play_audio(self, response):
         if response:
@@ -83,9 +86,34 @@ class ChatbotControlador:
             music.play()
             time.sleep(music.duration)
 
+    def record_windows(self):
+        mic = sr.Microphone()
+        with mic as source:
+            r.adjust_for_ambient_noise(source)
+            audio = r.listen(source)
+        
+        text = self.speech_file()
+        print(text+'\n')
+        return text
+
+    def record_linux(self):
+        rd.record_close()
+        wav_file = os.path.join(self.audio_dir, 'audios_wav', 'from_mic.wav')
+
+        wav_file = sr.AudioFile(wav_file)
+        with wav_file as source:
+            r.adjust_for_ambient_noise(source)
+            audio = r.record(source)
+
+        return r.recognize_google(audio, language='es-ES')
+        #self.play_audio(text) 
+
+
+
 os.system('clear')
-time.sleep(2)
+time.sleep(1)
 controlador = ChatbotControlador()
+#controlador.record_windows()
 controlador.start_chat()
 #str_de_audio = controlador.speech_file()
 
