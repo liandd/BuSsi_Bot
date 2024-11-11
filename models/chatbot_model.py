@@ -5,16 +5,21 @@ import random
 import string
 import warnings
 import sys
-from pathlib import Path
+import os
 
-sys.path.append(str(Path(__file__).resolve().parent.parent))
 from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from nltk.corpus import stopwords
-
 from utils import preprocess as pr
+
 warnings.filterwarnings("ignore")
+
+#Global
+BASE_DIR = '/home/qw4qe/Desktop/ian/Ucp/Optativa1_PLN/PROYECTO_BOT/BuSsi_Bot/models/'
+LSTM_DIR = os.path.join(BASE_DIR, 'BuSsi_lstm_model.sav')
 
 #Clase chatbot
 class Chatbot:
@@ -29,10 +34,16 @@ class Chatbot:
         self.vectorizer = TfidfVectorizer(tokenizer=self.lem_normalize, stop_words=stopwords.words('spanish'))
 
     def load_model(self):
-        filename = 'BuSsi_lstm_model.sav'
-        with open(filename, 'rb') as file:
-            self.lstm_model = pr.pickle.load(file)
-        print('MODELO CARGADO EXITOSAMENTE!')
+        #Validar si ya está el archivo de entrenamiento
+        if os.path.exists(BASE_DIR):
+            print('MODELO ENCONTRADO CON EXITO!')
+
+            with open(filename, 'rb') as file:
+                self.lstm_model = pr.pickle.load(file)
+            print('MODELO CARGADO EXITOSAMENTE!')
+        else:
+            print('NO SE ENCONTRO EL MODELO!')
+            sys.exit(0)
 
     def preprocess_input(self, text):
         sequences = pr.tokenizer.texts_to_sequences([text])
@@ -81,17 +92,14 @@ class Chatbot:
 
     def chat(self):
         # Modo conversación
-        print("Soy BuSsi, Un ChatBot bajo el dominio Negocios. Contestaré a tus preguntas acerca de Negocios. Si quiere salir escribe 'salir'")
+        yield "Soy BuSsi, Un ChatBot bajo el dominio Negocios. Contestaré a tus preguntas acerca de Negocios. Si quiere salir escribe 'salir'"
         flag:bool = True
         while flag:
             user_response = input().lower()
             if user_response == 'salir':
-                print("Fue un gusto hablar contigo, ¡Cuídate!")
+                yield "Fue un gusto hablar contigo, ¡Cuídate!"
                 flag = False
             else:
-                print("BuSsi:", self.get_response(user_response))
+                yield "BuSsi "+ self.get_response(user_response)
 
-# Instanciar y ejecutar el chatbot
-if __name__ == "__main__":
-    chatbot = Chatbot()
-    chatbot.chat()
+
