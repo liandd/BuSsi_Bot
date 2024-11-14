@@ -10,7 +10,7 @@ from utils import preprocess as pr
 #Validar si ya está el archivo de entrenamiento
 #Global
 #BASE_DIR ='C:\\PROYECTO\\models'
-BASE_DIR = 'models'
+BASE_DIR = 'models/'
 LSTM_DIR = os.path.join(BASE_DIR, 'BuSsi_lstm_model.sav')
 
 if os.path.exists(LSTM_DIR):
@@ -34,5 +34,7 @@ rnnmodel.fit(pr.x_train, y_train, batch_size=32, epochs=30,validation_data=(pr.x
 print('ENTRENAMIENTO COMPLETO.')
 
 filename = "BuSsi_lstm_model.sav"
-pr.pickle.dump(rnnmodel, open(filename,'wb'))
+file_path = os.path.join(BASE_DIR, filename)
+with open(file_path, 'wb') as f:
+    pr.pickle.dump(rnnmodel, f)
 print('MODELO EXPORTADO CON EXITO.')

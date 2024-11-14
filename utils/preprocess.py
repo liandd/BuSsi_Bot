@@ -16,7 +16,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Configuración
-BASE_DIR = 'Data'
+BASE_DIR = 'Data/'
 #BASE_DIR = 'Data' #Carpeta con los datos corpus
 GLOVE_DIR = os.path.join(BASE_DIR, 'glove.6B.100d.txt')
 CORPUS_JSON = os.path.join(BASE_DIR, 'Corpus_negocios.json')
