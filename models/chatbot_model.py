@@ -18,13 +18,14 @@ from utils import preprocess as pr
 warnings.filterwarnings("ignore")
 
 #Global
-BASE_DIR = '/models/'
+#BASE_DIR = 'C:\\PROYECTO\\models'
+BASE_DIR = 'models'
 LSTM_DIR = os.path.join(BASE_DIR, 'BuSsi_lstm_model.sav')
 
 #Clase chatbot
 class Chatbot:
     def __init__(self):
-        self.saludos_inputs = ["hola", "buenas", "saludos", "qué tal", "buenos días", "hola amigo", "buen día", "hey", "holaa", "cómo estás", "lucy cómo estás", "como estas", "buenos dias"]
+        self.saludos_inputs = ["hola", "buenas", "saludos", "qué tal", "buenos días", "hola amigo", "buen día", "hey", "holaa", "cómo estás", "lucy cómo estás", "como estas", "buenos dias","Hola","Buenas","Saludos","Qué tal","Buenos días","Hola amigo","Buen día", "Hey", "Cómo estás", "Lucy cómo estás"]
         self.saludos_outputs = ["Hola, soy Lucy", "Buenas Tardes, ¿en qué te puedo ayudar?", "Hola, cuentame de ti", "Hey, aquí Lucy", "¿Cómo puedo ayudarte?", "Saludos amigo", "Hola, amigo!", "Hola, ¿Cómo te puedo ayudar?"]
         
         self.load_model()
@@ -35,7 +36,7 @@ class Chatbot:
 
     def load_model(self):
         #Validar si ya está el archivo de entrenamiento
-        if os.path.exists(BASE_DIR):
+        if os.path.exists(LSTM_DIR):
             print('MODELO ENCONTRADO CON EXITO!')
 
             with open(LSTM_DIR, 'rb') as file:
@@ -59,34 +60,39 @@ class Chatbot:
 
         return lem_tokens(nltk.word_tokenize(text.lower().translate(remove_punct_dict)))
 
+    def generate_res(self, text, tokenizer, model):
+        response = text
+        for _ in range(50):
+            token_list = tokenizer.texts_to_sequences([response])[0]
+            token_list = pr.pad_sequences([token_list], maxlen=pr.MAX_SEQUENCE_LENGTH, padding='pre')
+            predict = model.predict(token_list, verbose=0)
+            next_word_index = pr.np.argmax(predict)
+
+            prob = predict[0][next_word_index]
+            if prob < 0.2:
+                return 'Lo siento, no te entiendo'
+
+            next_word = tokenizer.index_word.get(next_word_index)
+
+            if next_word is None:
+                break;
+            response += " "+next_word
+        return response
+
     def get_response(self, user_response):
         if self.is_greeting(user_response):
             return random.choice(self.saludos_outputs)
         else:
-            #Usar el LSTM
-            padded_seq = self.preprocess_input(user_response)
-            lstm_pred = self.lstm_model.predict(padded_seq)
-            predict_label = pr.np.argmax(lstm_pred)
+            gen_response = self.generate_res(user_response,pr.tokenizer, self.lstm_model)
 
-            self.sent_tokens.append(user_response)
-            tfidf = self.vectorizer.fit_transform(self.sent_tokens)
-            vals = cosine_similarity(tfidf[-1], tfidf)
+            if "Lo siento, no te entiendo" in gen_response:
+                return "Lo siento, no es mi dominio no te entiendo. Póngase en contacto con equipo1@ucp.edu.co"
 
-            idx = vals.argsort()[0][-2]
-            flat = vals.flatten()
-            flat.sort()
-            req_tfidf = flat[-2]
-            threshold = 0.3
-
-            if req_tfidf < threshold:
-                return "Lo siento, no te entiendo. Póngase en contacto con Equipo1@ucp.edu.co"
-            else:
-                self.sent_tokens.pop()  
-                return self.sent_tokens[idx]
+            return gen_response
 
     def is_greeting(self, sentence):
         for word in sentence.split():
-            if word.lower() in self.saludos_inputs:
+            if word in self.saludos_inputs:
                 return True
         return False
 
