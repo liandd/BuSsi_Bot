@@ -103,9 +103,9 @@ class ChatbotControlador:
                     self.play_audio(str_response)
                     continue
                     
-                initial_text = input().lower()
-                #initial_text = self.record_linux()
-                #print(initial_text+'\n')
+                #initial_text = input().lower()
+                initial_text = self.record_linux()
+                print(initial_text+'\n')
 
     def play_audio(self, response):
         if response:
